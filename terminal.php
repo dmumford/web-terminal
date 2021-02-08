@@ -1,3 +1,24 @@
+<?php
+// get and validate client ip address
+if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    $ip = filter_var($_SERVER['HTTP_CLIENT_IP'], FILTER_VALIDATE_IP);
+}
+elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $ip = filter_var($_SERVER['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP);
+}
+else {
+    $ip = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+}
+
+// if localhost
+if ($ip == '::1') {
+    $ip = 'localhost';
+}
+
+// log client ip for debug
+echo '<script>console.log("'.$ip.'"); </script>';
+
+?>
 <!DOCTYPE html>
 <html lang="en-gb">
 <head>
@@ -23,6 +44,6 @@
 
 </div>
 
-<script src="scripts/terminal.js?v=<?php echo uniqid(); ?>"></script>
+<script src="scripts/terminal.js?v=<?php echo uniqid(); ?>" id="terminal-script" ip="<?php echo $ip; ?>"></script>
 
 </body>
